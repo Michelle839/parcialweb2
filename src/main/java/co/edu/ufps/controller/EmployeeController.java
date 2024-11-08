@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.ufps.entities.Employee;
+import co.edu.ufps.entities.ProjectAssignment;
 import co.edu.ufps.services.EmployeeService;
 
 @RestController
@@ -59,6 +61,18 @@ public class EmployeeController {
 		Optional<Employee> updatedEmployee = employeeService.update(id, EmployeeDetails);
 		return updatedEmployee.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 	}
+	
+	@PostMapping("/{employeeId}/assign-to-project")
+    public ResponseEntity<ProjectAssignment> assignToProjectWithRole(
+            @PathVariable Integer employeeId,
+            @RequestParam Integer projectId,
+            @RequestParam Integer roleId) {
+
+        Optional<ProjectAssignment> assignment = employeeService.assignToProjectWithRole(employeeId, projectId, roleId);
+
+        return assignment.map(ResponseEntity::ok)
+                         .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Integer id) {
