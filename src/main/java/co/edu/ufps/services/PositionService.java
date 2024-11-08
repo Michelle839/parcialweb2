@@ -38,6 +38,9 @@ public class PositionService {
 
 		// Actualiza otros campos según sea necesario
 		//position.setNombre(positionDetails.getNombre());
+		position.setName(positionDetails.getName());
+		position.setSalary(positionDetails.getSalary());
+		
 
 		return Optional.of(positionRepository.save(position));
 	}

@@ -38,6 +38,7 @@ public class RoleService {
 
 		// Actualiza otros campos según sea necesario
 		//role.setNombre(roleDetails.getNombre());
+		role.setName(roleDetails.getName());
 
 		return Optional.of(roleRepository.save(role));
 	}

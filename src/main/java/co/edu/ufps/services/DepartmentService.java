@@ -38,7 +38,8 @@ public class DepartmentService {
 
 		// Actualiza otros campos según sea necesario
 		//department.setNombre(departmentDetails.getNombre());
-
+		department.setName(departmentDetails.getName());
+		
 		return Optional.of(departmentRepository.save(department));
 	}
 
