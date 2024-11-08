@@ -16,6 +16,7 @@ import co.edu.ufps.repositories.EmployeeRepository;
 import co.edu.ufps.repositories.ProjectAssignmentRepository;
 import co.edu.ufps.repositories.ProjectRepository;
 import co.edu.ufps.repositories.RoleRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class EmployeeService {
@@ -61,6 +62,34 @@ public class EmployeeService {
 		}
 		return Optional.empty();
 	}
+	
+	public List<ProjectAssignment> listEmployeesByProject(Integer projectId) {
+        return projectAssignmentRepository.findByProjectId(projectId);
+    }
+	
+	@Transactional
+    public void removeEmployeeFromDepartment(Integer employeeId, Integer departmentId) {
+        Employee employee = employeeRepository.findById(employeeId)
+            .orElseThrow(() -> new RuntimeException("Employee not found"));
+
+        Department department = departmentRepository.findById(departmentId)
+            .orElseThrow(() -> new RuntimeException("Department not found"));
+
+        // Desasociar la relación ManyToOne (si la tiene)
+        if (employee.getDepartment() != null && employee.getDepartment().getId().equals(departmentId)) {
+            employee.setDepartment(null);
+        }
+
+        // Desasociar la relación ManyToMany
+        if (employee.getDepartamentos() != null && employee.getDepartamentos().contains(department)) {
+            employee.getDepartamentos().remove(department);
+            department.getEmpleados().remove(employee);
+        }
+
+        // Guardar los cambios en la base de datos
+        employeeRepository.save(employee);
+        departmentRepository.save(department);
+    }
 
 	public Optional<ProjectAssignment> assignToProjectWithRole(Integer employeeId, Integer projectId, Integer roleId) {
 		Optional<Employee> employeeOpt = employeeRepository.findById(employeeId);

@@ -73,11 +73,32 @@ public class EmployeeController {
         return assignment.map(ResponseEntity::ok)
                          .orElseGet(() -> ResponseEntity.notFound().build());
     }
+	
+	@GetMapping("/project/{projectId}/assignments")
+    public ResponseEntity<List<ProjectAssignment>> listEmployeesByProject(@PathVariable Integer projectId) {
+        List<ProjectAssignment> assignments = employeeService.listEmployeesByProject(projectId);
+
+        if (assignments.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(assignments);
+    }
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Integer id) {
 		boolean deleted = employeeService.delete(id);
 		return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
 	}
+	
+	 // Endpoint para desasociar un empleado de un departamento
+    @DeleteMapping("/{employeeId}/department/{departmentId}")
+    public ResponseEntity<Void> removeEmployeeFromDepartment(
+            @PathVariable Integer employeeId,
+            @PathVariable Integer departmentId) {
+
+        employeeService.removeEmployeeFromDepartment(employeeId, departmentId);
+        return ResponseEntity.noContent().build();
+    }
 
 }

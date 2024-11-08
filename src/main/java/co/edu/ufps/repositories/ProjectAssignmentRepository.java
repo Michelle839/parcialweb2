@@ -10,4 +10,6 @@ import co.edu.ufps.entities.ProjectAssignment;
 
 @Repository
 public interface ProjectAssignmentRepository extends JpaRepository<ProjectAssignment,Integer>{
+	
+	 List<ProjectAssignment> findByProjectId(Integer projectId);
 }
